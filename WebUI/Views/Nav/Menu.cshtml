@@ -1,0 +1,165 @@
+﻿@using Microsoft.AspNet.Identity
+
+@model WebUI.Models.MenuViewModel
+
+<!--Mainmenu area -->
+<div class="mainmenu-area">
+    <div class="container">
+        <div class="row">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+
+                    @foreach(var link in Model.MenuLinks)
+                    {
+                        switch (link)
+                        {
+                            case "Home":
+                                if (link == Model.SelectedLink)
+                                {
+                                    <li class="active">
+                                        @Html.RouteLink(link, 
+                                            new { controller = "Home", action = "HomeIndex", selectedLink = link })
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        @Html.RouteLink(link, 
+                                            new { controller = "Home", action = "HomeIndex", selectedLink = link })
+                                    </li>
+                                }
+                                break;
+
+                            case "Shop":
+                                if(link == Model.SelectedLink)
+                                {
+                                    <li class="active">
+                                        @Html.RouteLink(link, 
+                                            new { controller = "Shop", action = "ProductList", selectedLink = link })
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        @Html.RouteLink(link, 
+                                            new { controller = "Shop", action = "ProductList", selectedLink = link })
+                                    </li>
+                                }
+                                break;
+
+                            case "Cart":
+                                if(link == Model.SelectedLink)
+                                {
+                                    <li class="active">
+                                        @Html.RouteLink(link, 
+                                            new { controller = "Cart", action = "CartIndex", selectedLink = link })
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        @Html.RouteLink(link, 
+                                            new { controller = "Cart", action = "CartIndex", selectedLink = link })
+                                    </li>
+                                }
+                                break;
+
+                            case "Contact":
+                                <li><a href="#">Contact</a></li>                               
+                                break;
+                            default:                              
+                                break;
+                        }
+                    }
+                </ul>
+
+                @using (Html.BeginForm("SearchProducts", "Shop", FormMethod.Get,
+                    new { @class = "navbar-form navbar-left" }))
+                {
+                    <div class="form-group" style="margin: 5px">
+                        <span>
+                            <input type="text" class="form-control" name="searchString"
+                                   placeholder="Search products" />
+                        </span>
+                    </div>
+                }
+
+                @if (Request.IsAuthenticated)
+                {
+                    using (Html.BeginForm("LogOff", "Account", FormMethod.Post,
+                        new { id = "logoutForm", @class = "navbar-right" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <ul class="nav navbar-nav navbar-right">
+                            <li style="text-transform:none;">
+                                <a href="@Url.Action("Login", "Account")">Hi, @User.Identity.GetUserName()</a>
+                            </li>
+                            <li>
+                                <a href="javascript:document.getElementById('logoutForm').submit()">
+                                    Log off
+                                </a>
+                            </li>
+                        </ul>
+                    }
+                }
+                else
+                {
+                    <ul class="nav navbar-nav navbar-right">
+                        @foreach(var item in Model.AccountLinks)
+                        {
+                            switch (item)
+                            {
+                                case "Register":
+                                    if(item == Model.SelectedLink)
+                                    {
+                                        <li class="active">
+                                            @Html.RouteLink(item, 
+                                                new { controller = "Account", action = "Register", selectedLink = item }, 
+                                                new { id = "registerLink" })
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li>
+                                            @Html.RouteLink(item, 
+                                                new { controller = "Account", action = "Register", selectedLink = item }, 
+                                                new { id = "registerLink" })
+                                        </li>
+                                    }
+                                    break;
+
+                                case "Log in":
+                                    if (item == Model.SelectedLink)
+                                    {
+                                        <li class="active">
+                                            @Html.RouteLink(item, 
+                                                new { controller = "Account", action = "Login", selectedLink = item }, 
+                                                new { id = "loginLink" })
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li>
+                                            @Html.RouteLink(item, 
+                                                new { controller = "Account", action = "Login", selectedLink = item }, 
+                                                new { id = "loginLink" })
+                                        </li>
+                                    }
+                                    break;
+                            }
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+</div> <!-- End mainmenu area -->

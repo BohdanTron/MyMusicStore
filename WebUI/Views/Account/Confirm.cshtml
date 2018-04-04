@@ -1,0 +1,15 @@
+﻿@model string
+
+@{
+    ViewBag.Title = "Confirm";
+}
+
+@Html.Action("Menu", "Nav")
+
+<div class="text-center" style="margin: 50px;">
+    <h2>Confirm email</h2>
+    <p>
+        Further instructions for completing the
+        registration have been sent on  @Model
+    </p>
+</div>

@@ -1,0 +1,124 @@
+﻿@model Domain.Entities.Cart
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@Html.Action("Menu", "Nav", new { selectedLink = "Cart" })
+
+
+<!--Page title area-->
+<div class="product-big-title-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="product-bit-title text-center">
+                    <h2>Shopping Cart</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> <!-- End Page title area -->
+<!--Shopping cart area-->
+<div class="single-product-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="product-content-right">
+                    <div class="woocommerce">
+                        <table cellspacing="0" class="shop_table cart">
+                            <thead>
+                                <tr>
+                                    <th class="product-remove">&nbsp;</th>
+                                    <th class="product-thumbnail">&nbsp;</th>
+                                    <th class="product-name">Product</th>
+                                    <th class="product-price">Price</th>
+                                    <th class="product-quantity">Quantity</th>
+                                    <th class="product-subtotal">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.CartLines)
+                                {
+                                    <tr class="cart_item">
+                                        <td>
+                                            @using (Html.BeginForm("RemoveFromCart", "Cart"))
+                                            {
+                                                @Html.Hidden("ProductId", item.Product.ProductId)
+
+                                                <input type="submit" value="Delete" />
+                                            }
+                                        </td>
+
+                                        <td class="product-thumbnail">
+                                            <a href="@Url.Action("SingleProductInfo", "Shop",
+                                                        new { category = item.Product.Category, id = item.Product.ProductId })">
+
+                                                @if (item.Product.ImageData != null)
+                                                {
+                                                    <img width="145" height="145" alt="poster_1_up" class="shop_thumbnail" src="@Url.Action("GetImage", "Shop",
+                                                             new {item.Product.ProductId })" />
+                                                }
+                                            </a>
+                                        </td>
+
+                                        <td class="product-name">
+                                            @Html.ActionLink(item.Product.Name, "SingleProductInfo", "Shop",
+                                                                    new { category = item.Product.Category, id = item.Product.ProductId }, null)
+                                        </td>
+
+                                        <td class="product-price">
+                                            <span class="amount">@item.Product.Price</span>
+                                        </td>
+
+                                        <td class="product-quantity">
+                                            <div class="quantity">
+
+                                                <input type="button" class="minus" value="-"
+                                                       onClick='location.href="@Url.Action("DecrementFromCart", "Cart", new { item.Product.ProductId })"'>
+
+                                                <input type="number" size="4" class="input-text qty text" title="Qty"
+                                                       value="@item.Quantity" min="0" step="1" disabled>
+
+                                                <input type="button" class="plus" value="+"
+                                                       onClick='location.href="@Url.Action("AddToCart", "Cart", new { item.Product.ProductId })"'>
+
+
+                                            </div>
+
+                                        </td>
+
+                                        <td class="product-subtotal">
+                                            <span class="amount">@((item.Product.Price * item.Quantity).ToString())</span>
+                                        </td>
+                                    </tr>
+
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3"></td>
+                                    <td>
+                                        @using (Html.BeginForm("Checkout", "Cart"))
+                                        {
+                                            <input type="submit" value="Proceed to Checkout">
+
+                                        }
+                                    </td>
+                                    <td class="text-right">Cart total:</td>
+                                    <td>
+                                        @Model.ComputeTotalValue().ToString("#,00 $")
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        @Html.Action("LatestProducts", "Cart")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,11 @@
+﻿@model Domain.Entities.Cart
+
+<div class="col-sm-6">
+    <div class="shopping-item">
+        <a href="@Url.Action("CartIndex", "Cart")">
+            Cart - <span class="cart-amunt">$@Model.ComputeTotalValue().ToString()</span>
+            <i class="fa fa-shopping-cart"></i>
+            <span class="product-count">@Model.CartLines.Count()</span>
+        </a>
+    </div>
+</div>

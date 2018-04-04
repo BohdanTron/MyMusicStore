@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Domain.Entities.Product>
+
+@{
+    ViewBag.Title = "SearchProducts";
+}
+
+@Html.Action("Menu", "Nav")
+
+<!---Title area-->
+<div class="product-big-title-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="product-bit-title text-center">
+                    <h2>Search results for "@ViewBag.SearchString"</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!---End title area-->
+<!--Main content area -->
+<div class="product-widget-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="row">
+            <div class="single-product-widget">
+                @foreach (var p in Model)
+                {
+                    <div class="col-md-3">
+                        <div class="single-product">
+                            <div class="product-f-image">
+                                @if (p.ImageData != null)
+                                {
+                                    <img src="@Url.Action("GetImage", "Shop",
+                                                 new {p.ProductId })" />
+                                }
+
+                                <div class="product-hover">
+                                    <a href="@Url.Action("AddToCart", "Cart", new { p.ProductId})"
+                                       class="add-to-cart-link" style="margin:1px; left: 9%">
+                                        <i class="fa fa-shopping-cart"></i>
+                                        Add to cart
+                                    </a>
+
+                                    <a href="@Url.Action("SingleProductInfo", "Shop", new {category = p.Category, id = p.ProductId })"
+                                       class="view-details-link" style="margin:1px; left: 9%">
+                                        <i class="fa fa-link"></i>
+                                        See details
+                                    </a>
+                                </div>
+
+                            </div>
+
+                            <h2>@Html.ActionLink(p.Name, "SingleProductInfo", "Shop", new { category = p.Category, id = p.ProductId }, null)</h2>
+
+                            <div class="product-carousel-price" style="margin: -10px 0px 30px 0px;">
+                                <ins>@p.Price$</ins> <del>10000$</del>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div> <!-- End main content area -->

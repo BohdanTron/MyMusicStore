@@ -1,0 +1,82 @@
+﻿
+@model WebUI.Models.ProductListViewModel
+
+
+@{
+    ViewBag.Title = "ProductList";
+}
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+
+@Html.Action("Menu", "Nav", new { selectedLink = "Shop"})
+
+<!---Title area-->
+<div class="product-big-title-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="product-bit-title text-center">
+                    <h2>Shop</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!---End title area-->
+<!--Product list area-->
+<div class="single-product-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="single-sidebar">
+                    <div class="menu">
+                        <div class="mini-menu">
+                            <ul>
+                                <li class="sub">
+                                    <a href="#">Category</a>
+
+                                    @using (Html.BeginForm("ProductList", "Shop"))
+                                    {
+                                        <ul>
+                                            @for (int i = 0; i < Model.CategoryList.Criterions.Count; i++)
+                                            {
+                                                <li>
+                                                    <label>
+                                                        @Html.CheckBoxFor(m => Model.CategoryList.Criterions[i].IsChecked, 
+                                                            new { style = "margin-left:10px"})
+                                                        @Model.CategoryList.Criterions[i].CriterionName
+                                                        @Html.HiddenFor(m => Model.CategoryList.Criterions[i].CriterionName)
+                                                    </label>
+                                                </li>
+                                            }
+                                        </ul>
+
+                                        <input type="submit" value="Submit" 
+                                               style="margin-bottom:-7px; width: 250px;"/>
+                                    }
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="product-content-right">
+                    <div class="row">
+
+
+                        @foreach (var p in Model.Products)
+                        {
+                            @Html.Partial("ProductSummary", p)
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!--End product list area-->
+
+
+
+<script src="~/Scripts/menu.js"></script>

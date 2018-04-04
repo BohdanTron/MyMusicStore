@@ -1,0 +1,24 @@
+﻿@model IEnumerable<Domain.Entities.Product>
+
+<div class="col-md-4">
+    <div class="single-sidebar">
+        <h2 class="sidebar-title">Related Products</h2>
+        @foreach (var p in Model)
+        {
+            <div class="thubmnail-recent">
+                <a href="@Url.Action("SingleProductInfo", "Shop", new { id = p.ProductId })">
+
+                    @if (p.ImageData != null)
+                    {
+                        <img class="recent-thumb" src="@Url.Action("GetImage", "Shop",
+                                             new { p.ProductId })" />
+                    }
+                </a>
+                <h2>@Html.ActionLink(p.Name, "SingleProductInfo", "Shop", new { id = p.ProductId }, null)</h2>
+                <div class="product-sidebar-price">
+                    <ins>@p.Price</ins> <del>$1800.00</del>
+                </div>
+            </div>
+        }
+    </div>
+</div>

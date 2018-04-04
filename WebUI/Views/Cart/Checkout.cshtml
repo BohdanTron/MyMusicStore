@@ -1,0 +1,103 @@
+﻿@using Microsoft.AspNet.Identity
+@using WebUI.Infrastructure
+
+
+@model Domain.Entities.ShippingDetails
+
+@{
+    ViewBag.Title = "Checkout";
+}
+
+<link href="~/Content/ErrorStyles.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.9.1.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+
+
+@Html.Action("Menu", "Nav")
+
+<!--Page title area-->
+<div class="product-big-title-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="product-bit-title text-center">
+                    <h2>Checkout</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> <!-- End Page title area -->
+<div class="single-product-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="row">
+            @Html.Action("AnotherProducts", "Cart")
+
+            <div class="col-md-8">
+                <div class="product-content-right">
+                    <div class="woocommerce">
+
+                        @using (Html.BeginForm("Checkout", "Cart", FormMethod.Post, new { @class = "checkout" }))
+                        {
+                            <div id="customer_details" class="col2-set">
+                                <div class="col-md-12">
+                                    <div class="woocommerce-billing-fields">
+
+                                        <div class="form-group">
+                                            <label for="firstName">First name *</label>
+                                            @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control", id = "firstName",
+                                                @Value = User.Identity.Name })
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="lastName">Last name *</label>
+                                            @Html.TextBoxFor(x => x.LastName, new { @class = "form-control", id = "lastName" })
+                                            @Html.ValidationMessageFor(x => x.LastName)
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="country">Country *</label>
+                                            @Html.TextBoxFor(x => x.Country, new { @class = "form-control", id = "country" })
+                                            @Html.ValidationMessageFor(x => x.Country)
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="city">City *</label>
+                                            @Html.TextBoxFor(x => x.City, new { @class = "form-control", id = "city" })
+                                            @Html.ValidationMessageFor(x => x.City)
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="email">Email *</label>
+                                            @Html.TextBoxFor(x => x.Email, new { @class = "form-control", id = "email",
+                                                @readonly = "readonly",
+                                                @Value = User.Identity.GetUserEmail() })
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="phone">Phone *</label>
+                                            @Html.TextBoxFor(x => x.Phone, new { @class = "form-control", id = "phone" })
+                                            @Html.ValidationMessageFor(x => x.Phone)
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>
+                                                @Html.EditorFor(x => x.GiftWrap)
+                                                Use a gift wrap?
+                                            </label>
+
+                                        </div>
+
+                                        <input type="submit" value="Make an order" />
+                                        <div class="clear"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

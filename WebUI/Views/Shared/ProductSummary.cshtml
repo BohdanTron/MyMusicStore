@@ -1,0 +1,29 @@
+﻿@model Domain.Entities.Product
+
+<div class="col-md-3 col-sm-6">
+    <div class="single-shop-product">
+        <div class="product-upper">
+            <a href="@Url.Action("SingleProductInfo", "Shop", new { category = Model.Category, id = Model.ProductId })">
+                @if (Model.ImageData != null)
+                {
+                    <img class="img-thumbnail" src="@Url.Action("GetImage", "Shop",
+                            new { Model.ProductId })" />
+                }
+            </a>
+        </div>
+        <h2>@Html.ActionLink(Model.Name, "SingleProductInfo", new { category = Model.Category, id = Model.ProductId })</h2>
+        <div class="product-carousel-price">
+            <ins>@Model.Price</ins> <del>$1999.00</del>
+        </div>
+
+        <div class="product-option-shop">
+            @using (Html.BeginForm("AddToCart", "Cart"))
+            {
+
+                @Html.HiddenFor(p => p.ProductId)
+
+                <input type="submit" value="Add to cart" />
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Domain.Entities.Product>
+
+<h3 style="color:#1abc9c">You may be interested in...</h3>
+
+<div class="latest-product">
+    <div class="product-carousel">
+        @foreach(var p in Model)
+        {
+            <div class="single-product">
+                <div class="product-f-image">
+                    @if (p.ImageData != null)
+                    {
+                        <img class="img-thumbnail" src="@Url.Action("GetImage", "Shop",
+                                                        new { p.ProductId })" />
+                    }
+
+                    <div class="product-hover">
+                        <a href="@Url.Action("AddToCart", "Cart", new { productId = p.ProductId })" 
+                           class="add-to-cart-link">
+                            <i class="fa fa-shopping-cart"></i>
+                            Add to cart
+                        </a>
+
+                        <a href="@Url.Action("SingleProductInfo", "Shop", new { id = p.ProductId })"
+                           class="view-details-link">
+                            <i class="fa fa-link"></i>
+                            See details
+                        </a>
+                    </div>
+                </div>
+
+                <h2>@Html.ActionLink(p.Name, "SingleProductInfo", "Shop", new { id = p.ProductId }, null)</h2>
+
+                <div class="product-carousel-price">
+                    <ins>@p.Price$</ins> <del>10000$</del>
+                </div>
+            </div>
+        }
+    </div>
+</div>

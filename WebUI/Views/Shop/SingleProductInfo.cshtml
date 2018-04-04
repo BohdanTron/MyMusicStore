@@ -1,0 +1,148 @@
+﻿@using Microsoft.AspNet.Identity
+
+@model WebUI.Models.SingleProductInfoViewModel
+
+@{
+    ViewBag.Title = "SingleProductInfo";
+}
+
+@Html.Action("Menu", "Nav")
+
+<!---Title area-->
+<div class="product-big-title-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="product-bit-title text-center">
+                    <h2>Single product</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!---End title area-->
+<!--Single product area-->
+<div class="single-product-area">
+    <div class="zigzag-bottom"></div>
+    <div class="container">
+        <div class="row">
+            <!--Related Products-->
+            @Html.Action("RelatedProducts", "Shop", new { category = Model.SingleProduct.Category })
+
+
+            <!--Selected product full description-->
+            <div class="col-md-8">
+                <div class="product-content-right">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="product-images">
+                                <div class="product-main-img">
+                                    <a href="@Url.Action("SingleProductInfo", "Shop",
+                                            new {id = Model.SingleProduct.ProductId })">
+
+                                        @if (Model.SingleProduct.ImageData != null)
+                                        {
+                                            <img src="@Url.Action("GetImage", "Shop",
+                                                     new { Model.SingleProduct.ProductId })" />
+                                        }
+                                    </a>
+                                </div>
+
+                                <div class="product-gallery">
+                                    <img src="~/images/product-thumb-1.jpg" alt="">
+                                    <img src="~/images/product-thumb-2.jpg" alt="">
+                                    <img src="~/images/product-thumb-3.jpg" alt="">
+                                    <img src="~/images/product-thumb-4.jpg" alt="">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="product-inner">
+                                <h2 class="product-name">@Model.SingleProduct.Name</h2>
+                                <div class="product-inner-price">
+                                    <ins>@Model.SingleProduct.Price</ins> <del>$1800.00</del>
+                                </div>
+
+                                @using (Html.BeginForm("AddToCart", "Cart", FormMethod.Post, new { @class = "cart" }))
+                                {
+                                    @Html.Hidden("ProductId", Model.SingleProduct.ProductId)
+                                    <button class="add_to_cart_button" type="submit">Add to cart</button>
+                                }
+
+                                <div class="product-inner-category">
+
+                                    <p>
+                                        Category:
+                                        <a href="@Url.Action("ProductList", "Shop", new { Model.SingleProduct })">
+                                            @Model.SingleProduct.Category
+                                        </a>
+
+                                    </p>
+                                </div>
+
+                                <div role="tabpanel">
+                                    <ul class="product-tab" role="tablist">
+                                        <li role="presentation" class="active">
+                                            <a href="#home" aria-controls="home" role="tab" data-toggle="tab">
+                                                Description
+                                            </a>
+                                        </li>
+                                        <li role="presentation">
+                                            <a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">
+                                                Reviews
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div role="tabpanel" class="tab-pane fade in active" id="home">
+                                            <h2>Product Description</h2>
+                                            @Model.SingleProduct.Description
+                                        </div>
+                                        <div role="tabpanel" class="tab-pane fade" id="profile">
+                                            <div class="submit-review">
+                                                @using (Html.BeginForm("CommentOn", "Shop",
+                                                    new
+                                                    {
+                                                        productId = Model.SingleProduct.ProductId,
+                                                        userId = @User.Identity.GetUserId()
+                                                    }))
+                                                {
+                                                    @Html.AntiForgeryToken()
+                                                    <p>
+                                                        <label for="review">Your review</label>
+                                                        <textarea name="review" cols="30" rows="10" required></textarea>
+                                                    </p>
+
+                                                    <input type="submit" value="Submit">
+
+                                                }
+                                            </div>
+
+                                            <h2>Reviews</h2>
+
+                                            @foreach (var comment in Model.Comments)
+                                            {
+                                                foreach (var user in comment.ApplicationUsers)
+                                                {
+                                                    <div class="comment">
+                                                        <h3>@user.UserName</h3>
+
+                                                        <span>
+                                                            @comment.Date.ToShortDateString() | @comment.Date.ToShortTimeString()
+                                                        </span>
+                                                        <div class="line"></div>
+                                                        <p>@comment.Text</p>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!--End Single product area-->
