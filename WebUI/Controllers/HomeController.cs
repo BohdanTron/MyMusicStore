@@ -1,5 +1,6 @@
 ﻿using Domain.Abstract;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using WebUI.Models;
 
@@ -14,20 +15,23 @@ namespace WebUI.Controllers
             _repository = repository;
         }
 
-        public ViewResult HomeIndex()
+        public async Task<ViewResult> HomeIndex()
         {
             HomeIndexViewModel model = new HomeIndexViewModel
             {
-                AllProducts = _repository.Products
-                    .Take(10),
+                AllProducts = await Task.Run(() => 
+                    _repository.Products
+                   .Take(10)),
 
-                NewestProducts = _repository.Products
+                NewestProducts = await Task.Run(() => 
+                    _repository.Products
                     .OrderByDescending(p => p.ProductId)
-                    .Take(3),
+                    .Take(3)),
 
-                SellersProducts = _repository.Products
+                SellersProducts = await Task.Run(() =>
+                    _repository.Products
                     .OrderByDescending(p => p.Price)
-                    .Take(3)
+                    .Take(3))
             };
 
             return View(model);

@@ -149,7 +149,7 @@ namespace WebUI.Controllers
                 }
                 else
                 {
-                    //if (user.EmailConfirmed == true)
+                    if (user.EmailConfirmed == true)
                     {
                         ClaimsIdentity claim = await UserManager.CreateIdentityAsync(user,
                                                         DefaultAuthenticationTypes.ApplicationCookie);
@@ -162,11 +162,11 @@ namespace WebUI.Controllers
                             return RedirectToAction("HomeIndex", "Home");
                         return Redirect(returnUrl);
                     }
-                    //else
-                    //{
-                    //    ModelState.AddModelError("", "Not verified email.");
-                    //}
-                    
+                    else
+                    {
+                        ModelState.AddModelError("", "Not verified email.");
+                    }
+
                 }
             }
             ViewBag.returnUrl = returnUrl;

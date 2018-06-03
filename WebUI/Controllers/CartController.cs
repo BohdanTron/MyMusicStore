@@ -1,7 +1,7 @@
 ﻿using Domain.Abstract;
 using Domain.Entities;
-using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace WebUI.Controllers
@@ -31,10 +31,10 @@ namespace WebUI.Controllers
         }
 
 
-        public RedirectToRouteResult AddToCart(Cart cart, int productId)
+        public async Task<RedirectToRouteResult> AddToCart(Cart cart, int productId)
         {
-            Product product = _repository.Products
-                .FirstOrDefault(p => p.ProductId == productId);
+            Product product = await Task.Run(() => _repository.Products
+                .FirstOrDefault(p => p.ProductId == productId));
 
             if (product != null)
             {
@@ -45,10 +45,10 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
-        public RedirectToRouteResult RemoveFromCart(Cart cart, int productId)
+        public async Task<RedirectToRouteResult> RemoveFromCart(Cart cart, int productId)
         {
-            Product product = _repository.Products
-                .FirstOrDefault(p => p.ProductId == productId);
+            Product product = await Task.Run(() => _repository.Products
+                .FirstOrDefault(p => p.ProductId == productId));
 
             if (product != null)
             {
@@ -58,12 +58,12 @@ namespace WebUI.Controllers
             return RedirectToAction("CartIndex");
         }
 
-        public RedirectToRouteResult DecrementFromCart(Cart cart, int productId)
+        public async Task<RedirectToRouteResult> DecrementFromCart(Cart cart, int productId)
         {
-            Product product = _repository.Products
-                .FirstOrDefault(p => p.ProductId == productId);
+            Product product = await Task.Run(() => _repository.Products
+               .FirstOrDefault(p => p.ProductId == productId));
 
-            if(product != null)
+            if (product != null)
             {
                 cart.DecrementProduct(product);
             }
@@ -91,7 +91,7 @@ namespace WebUI.Controllers
 
         public PartialViewResult AnotherProducts()
         {
-            IEnumerable<Product> products = _repository.Products
+            var products = _repository.Products
                 .OrderByDescending(p => p.Price)
                 .Take(4);
 
@@ -100,7 +100,7 @@ namespace WebUI.Controllers
 
         public PartialViewResult LatestProducts()
         {
-            IEnumerable<Product> products = _repository.Products
+            var products = _repository.Products
                 .OrderByDescending(p => p.ProductId)
                 .Take(10);
 

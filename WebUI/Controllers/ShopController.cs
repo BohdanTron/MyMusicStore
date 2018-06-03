@@ -9,6 +9,7 @@ using System.Data.Entity;
 using System.Web.Mvc;
 using WebUI.Models;
 using System;
+using System.Threading.Tasks;
 
 namespace WebUI.Controllers
 {
@@ -31,28 +32,30 @@ namespace WebUI.Controllers
         }
 
 
-        public ViewResult SearchProducts(string searchString)
+        public async Task<ViewResult> SearchProducts(string searchString)
         {
             ViewBag.SearchString = searchString;
 
-            IEnumerable<Product> products = _repository.Products
-                .Select(p => p);
+            var products =  await Task.Run(() =>
+                _repository.Products
+                .Select(p => p));
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                products = products.Where(p => p.Name.ToLower()
-                    .Contains(searchString.ToLower()));
+                products = await Task.Run(() => 
+                    products.Where(p => p.Name.ToLower()
+                    .Contains(searchString.ToLower())));
             }
 
             return View(products);
         }
 
 
-        public ViewResult ProductList()
+        public async Task<ViewResult> ProductList()
         {
-            IEnumerable<string> categories = GetAllCategories();
+            var categories = await GetAllCategories();
 
-            List<Criterion> menuList = new List<Criterion>();
+            var menuList = new List<Criterion>();
 
             foreach (var category in categories)
             {
@@ -66,46 +69,46 @@ namespace WebUI.Controllers
 
             ProductListViewModel model = new ProductListViewModel
             {
-                Products = _repository.Products,
+                Products = await Task.Run(() => _repository.Products),
+
                 CategoryList = new CriterionList
                 {
                     Criterions = menuList
                 }
             };
 
-
             return View(model);
         }
 
 
         [HttpPost]
-        public ViewResult ProductList(ProductListViewModel list)
+        public async Task<ViewResult> ProductList(ProductListViewModel list)
         {
             ProductListViewModel model = new ProductListViewModel
             {
-                Products = SearchCheckedProducts(list),
-                CategoryList = list.CategoryList,
+                Products = await SearchCheckedProducts(list),
+                CategoryList = await Task.Run(() => list.CategoryList),
             };
 
             return View(model);
         }
 
 
-        public ActionResult SingleProductInfo(int id)
+        public async Task<ActionResult> SingleProductInfo(int id)
         {
-            Product product = _repository.Products
-                .FirstOrDefault(p => p.ProductId == id);
+            Product product = await Task.Run(() =>_repository.Products
+                .FirstOrDefault(p => p.ProductId == id));
 
             SingleProductInfoViewModel model = new SingleProductInfoViewModel
             {
                 SingleProduct = product,
 
-                Comments = _repository.Comments
+                Comments = await Task.Run(() => _repository.Comments
                     .Where(c => c.ProductId == id)
                     .OrderByDescending(c => c.Date)
-                    .Include(c => c.ApplicationUsers),
+                    .Include(c => c.ApplicationUsers)),
                 
-                Users = _repository.Users
+                Users = await Task.Run(() => _repository.Users)
             };
 
             return View(model);
@@ -135,10 +138,10 @@ namespace WebUI.Controllers
         }
 
 
-        public FileContentResult GetImage(int productId)
+        public async Task<FileContentResult> GetImage(int productId)
         {
-            Product product = _repository.Products
-                .FirstOrDefault(p => p.ProductId == productId);
+            Product product = await Task.Run(() => _repository.Products
+                .FirstOrDefault(p => p.ProductId == productId));
 
             if (product != null)
             {
@@ -150,7 +153,7 @@ namespace WebUI.Controllers
 
         public PartialViewResult RelatedProducts(string category)
         {
-            IEnumerable<Product> products = _repository.Products
+            var products = _repository.Products
                     .OrderByDescending(p => p.ProductId)
                     .Where(p => p.Category == category)
                     .Take(5);
@@ -158,22 +161,25 @@ namespace WebUI.Controllers
             return PartialView(products);
         }
 
-        private IEnumerable<string> GetAllCategories()
+        private async Task<IEnumerable<string>> GetAllCategories()
         {
-            return _repository.Products
+            return await Task.Run(() => _repository.Products
                 .Select(p => p.Category)
-                .Distinct();
+                .Distinct());
         }
 
-        private IEnumerable<Product> SearchCheckedProducts(ProductListViewModel list)
+        private async Task<IEnumerable<Product>> SearchCheckedProducts(ProductListViewModel list)
         {
-            List<Product> result = new List<Product>();
+            var result = new List<Product>();
 
-            foreach (var product in _repository.Products)
+            var products = await Task.Run(() => _repository.Products);
+            var crierions = await Task.Run(() => list.CategoryList.Criterions);
+
+            foreach (var product in products)
             {
-                foreach (var category in list.CategoryList.Criterions)
+                foreach (var crierion in crierions)
                 {
-                    if (category.IsChecked && category.CriterionName == product.Category)
+                    if (crierion.IsChecked && crierion.CriterionName == product.Category)
                     {
                         result.Add(product);
                     }
